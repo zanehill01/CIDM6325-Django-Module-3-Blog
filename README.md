@@ -29,6 +29,14 @@ Build a Blog Feature Set — Auth/CRUD/Workflow (40 pts)
 Part C — Reflection on AI-assisted Modeling (15 pts)
 - Implemented: `REFLECTION.md` contains a ~500-word reflection describing how AI supported model/form design, including prompt examples and critiques.
 
+### Part D. Peer Review (15 points)
+tdb
+
+
+### Part E. DjangoVMS Journey Critique (10 points)
+tbd
+
+
 HTMX and Accessibility
 - HTMX: live search and inline edit endpoints implemented (`hx_post_search`, `hx_post_inline_edit`) and covered by tests in `blog/tests.py`.
 - Accessibility: `ACCESSIBILITY.md` documents checks and improvements; the login template was updated to expose error containers and help text ids. Additional per-field ARIA and contrast checks are recommended as follow-ups.
