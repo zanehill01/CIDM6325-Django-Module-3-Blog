@@ -1,69 +1,60 @@
-# CIDM6325 Django Blog Project
+# CIDM6325 — Django Blog (Module 3)
 
-This repo is a small Django blog used for Module 3 coursework. It demonstrates authentication, CRUD, forms and validation, HTMX interactions, and basic accessibility considerations.
+Summary
 
-## Quick run
+This repository implements a Django blog for the Module 3 assignment. The project implements authentication, CRUD, editorial workflow, custom forms and validation, HTMX interactions, basic accessibility improvements, tests, and CI.
 
-1. Create and activate a virtual environment (PowerShell):
+Quick start (PowerShell)
 
 ```powershell
 python -m venv .venv; .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py createsuperuser
 python manage.py runserver
 ```
 
-2. Open http://localhost:8000/ to see the post list.
+Open http://127.0.0.1:8000/ after starting the server.
 
-## What is implemented (mapping to rubric)
+Assignment mapping (what to grade)
 
-- Auth / CRUD / Workflow (40 pts)
-  - Login/logout: Provided by Django's auth (`/accounts/` urls). Template at `templates/registration/login.html`.
-  - CRUD: Post create/edit/delete in `blog/views.py` and templates `templates/post_form.html`, `templates/blog/post_detail.html`, `templates/blog/post_list.html`.
-  - Workflow: `Post.status` with values draft/review/published. Publishing is gated by `blog.can_publish` permission.
-  - Role-based permissions: `can_publish` and `can_review` defined in `Post.Meta.permissions`. Views check for `change_post` and `delete_post` and `can_publish`.
-  - Bootstrap styling: Included in `templates/base.html`.
-  - HTMX interactions: `hx_post_search` and `hx_post_inline_edit` implemented in `blog/views.py` and wired from `templates/blog/post_list.html` and `templates/blog/partials/_post_row.html`.
+Part A — Forms & Validation (30 pts)
+- Implemented: `blog/forms.py` (`PostForm`, `CommentForm`) with `clean_title`, `clean`, banned-word checks, and `save(author=...)` that parses `tags_csv`. See tests in `blog/tests.py` for coverage.
 
-- Forms & Validation (Part A, 30 pts)
-  - `PostForm` in `blog/forms.py` has custom validation `clean_title` and `clean`, `tags_csv` parsing, and a save method that attaches tags.
-  - `CommentForm` validates against banned words.
+Part B — Multi-Model Design (30 pts)
+- Implemented: `blog/models.py` defines `Post`, `Tag` (ManyToMany), and `Comment` (FK). See `SCHEMA.md` for Mermaid ER diagram and migration notes.
 
-- Multi-Model Design (Part B, 30 pts)
-  - Models: `Post`, `Tag` (ManyToMany), `Comment` (OneToMany). See `blog/models.py`.
+Build a Blog Feature Set — Auth/CRUD/Workflow (40 pts)
+- Implemented: authentication (register/login/logout), post create/edit/delete, editorial workflow (`draft` → `review` → `published`), and role-based permissions (`can_review`, `can_publish`). Key files: `blog/views.py`, `blog/urls.py`, `templates/`.
 
-## Missing / Partial items (what I will implement next)
+Part C — Reflection on AI-assisted Modeling (15 pts)
+- Implemented: `REFLECTION.md` contains a ~500-word reflection describing how AI supported model/form design, including prompt examples and critiques.
 
-- CI/CD: No GitHub Actions workflow yet. I will add a minimal workflow that runs tests.
-- Tests: `blog/tests.py` is empty. I will add unit tests for `PostForm` validation and permission checks.
-- Documentation: This README (created) but I will add a rubric mapping section and a short schema diagram file.
-- Accessibility: Some a11y improvements and WCAG notes are missing; I will add `ACCESSIBILITY.md` with items and small template fixes.
+HTMX and Accessibility
+- HTMX: live search and inline edit endpoints implemented (`hx_post_search`, `hx_post_inline_edit`) and covered by tests in `blog/tests.py`.
+- Accessibility: `ACCESSIBILITY.md` documents checks and improvements; the login template was updated to expose error containers and help text ids. Additional per-field ARIA and contrast checks are recommended as follow-ups.
 
-## Files of interest
-- `blog/models.py` — data models and permissions.
-- `blog/forms.py` — `PostForm` and `CommentForm`.
-- `blog/views.py` — list/detail views, CRUD, and HTMX endpoints.
-- `templates/` — project templates.
-- `requirements.txt` — dependencies.
+CI and Tests
+- `.github/workflows/ci.yml` runs migrations and the test suite on push/PR.
+- Test suite: `blog/tests.py` includes form, auth, permissions, workflow, and HTMX tests. Tests run successfully in the provided virtual environment.
 
-## Next steps I'm ready to implement
-1. Add unit tests for forms and permissions.
-2. Add GitHub Actions workflow for CI.
-3. Add `ACCESSIBILITY.md` and make small template adjustments.
-4. Produce a schema diagram (SVG or PNG) and migration notes.
+Files of interest (quick reference)
+- `blog/models.py` — Post, Tag, Comment (schema)
+- `blog/forms.py` — PostForm, CommentForm (validation)
+- `blog/views.py` — CRUD, HTMX endpoints, auth helpers
+- `blog/tests.py` — unit tests (forms, auth, review workflow, HTMX)
+- `SCHEMA.md` — Mermaid ER diagram, migration notes, business/analytics assumptions
+- `ACCESSIBILITY.md` — accessibility checklist and implementation notes
+- `REFLECTION.md` — reflection on AI-assisted modeling
+- `.github/workflows/ci.yml` — CI workflow
 
-If you'd like me to proceed, tell me which of the next steps to start with (I suggest tests → CI → accessibility → docs).
+Grader quick verification steps
+1. Create a virtual env and install dependencies.
+2. Run `python manage.py migrate` and `python manage.py test` — tests should pass.
+3. Start the server and exercise the app: register, create a post, move to review, and publish with an account that has `can_publish`.
 
-## Running tests and CI
+Optional extras I can add on request
+- Rendered SVG of the Mermaid diagram (for viewers without Mermaid support).
+- Per-field ARIA error IDs across forms (accessibility hardening).
+- A one-page grading checklist for submission.
 
-Automated tests are included in `blog/tests.py`. To run tests locally:
-
-```powershell
-python -m venv .venv; .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py test
-```
-
-A minimal GitHub Actions workflow is included at `.github/workflows/ci.yml` which installs dependencies, runs migrations, and executes the test suite on pushes and PRs to `main`.
+If you'd like me to add any of the optional extras, say which and I'll add it and re-run tests.

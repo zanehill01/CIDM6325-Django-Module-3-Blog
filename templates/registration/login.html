@@ -3,11 +3,14 @@
 {% block content %}
 <h1 class="h3">Login</h1>
 <form method="post">{% csrf_token %}
-  {{ form.non_field_errors }}
+  {% if form.non_field_errors %}
+    <div id="login-nonfield-errors" class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+  {% endif %}
   <input type="hidden" name="next" value="{{ next }}" />
   <div class="mb-3">
     {{ form.username.label_tag }}
     {{ form.username }}
+    {# If there are errors, the non-field errors container is present and inputs are followed by error elements; keep help text id for association #}
     <div id="id_username_help" class="form-text visually-hidden">Enter your username</div>
     {{ form.username.errors }}
   </div>

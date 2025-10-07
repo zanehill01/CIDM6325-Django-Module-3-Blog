@@ -131,3 +131,27 @@ class ReviewWorkflowTests(TestCase):
 		user = resp.context.get("user")
 		self.assertTrue(user.is_authenticated)
 
+	def test_hx_search_returns_fragment(self):
+		# create posts to search
+		u = User.objects.create_user(username="searcher", password="pw")
+		Post.objects.create(title="FindMe Please", body="body text", author=u, status=Post.Status.PUBLISHED)
+		resp = self.client.get('/hx/search/?q=FindMe')
+		self.assertEqual(resp.status_code, 200)
+		self.assertIn('FindMe Please', resp.content.decode())
+
+	def test_hx_inline_edit_get_and_post(self):
+		# create a user and a post
+		user = User.objects.create_user(username="inline", password="pw")
+		post = Post.objects.create(title="Inline Title", body="long body here", author=user, status=Post.Status.DRAFT)
+		# login as author
+		self.client.login(username="inline", password="pw")
+		# GET should return the inline form fragment
+		resp = self.client.get(f'/hx/posts/{post.pk}/inline/')
+		self.assertEqual(resp.status_code, 200)
+		self.assertIn('form', resp.content.decode().lower())
+		# POST an edit
+		resp = self.client.post(f'/hx/posts/{post.pk}/inline/', {'title': 'Inline Title Edited', 'body': post.body, 'status': post.status, 'tags_csv': ''})
+		self.assertEqual(resp.status_code, 200)
+		post.refresh_from_db()
+		self.assertEqual(post.title, 'Inline Title Edited')
+
