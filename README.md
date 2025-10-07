@@ -57,4 +57,3 @@ Optional extras I can add on request
 - Per-field ARIA error IDs across forms (accessibility hardening).
 - A one-page grading checklist for submission.
 
-If you'd like me to add any of the optional extras, say which and I'll add it and re-run tests.
